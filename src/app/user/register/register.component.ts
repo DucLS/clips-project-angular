@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { AuthService } from 'src/app/services/auth.service';
+import IUser from 'src/app/models/user.model';
 
 @Component({
   selector: 'app-register',
@@ -9,7 +11,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 export class RegisterComponent {
   name = new FormControl('', [Validators.required, Validators.minLength(3)]);
   email = new FormControl('', [Validators.required, Validators.email]);
-  age = new FormControl('', [
+  age = new FormControl<number | null>(null, [
     Validators.required,
     Validators.min(8),
     Validators.max(100),
@@ -35,16 +37,30 @@ export class RegisterComponent {
   });
 
   isShowAlert = false;
+  isSubmission = true;
   alertMsg = '';
   alertColor = '';
 
-  register() {
-    if (this.registerForm.invalid) {
+  constructor(private authService: AuthService) {}
+
+  async register() {
+    if (this.registerForm.invalid || !this.isSubmission) {
       return;
     }
 
-    this.isShowAlert = true;
-    this.alertMsg = 'Success';
-    this.alertColor = 'blue';
+    try {
+      this.authService.createUser(this.registerForm.value as IUser);
+
+      this.isShowAlert = true;
+      this.alertMsg = 'Success! Your account has been created.';
+      this.alertColor = 'green';
+    } catch (e) {
+      this.isShowAlert = true;
+      this.alertMsg = 'An unexpected error occurred. Please try again!';
+      this.alertColor = 'red';
+      this.isSubmission = false;
+
+      return;
+    }
   }
 }
