@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
 import IUser from 'src/app/models/user.model';
+import { RegisterValidators } from '../validators/register-validators';
+import { EmailTaken } from '../validators/email-taken';
 
 @Component({
   selector: 'app-register',
@@ -10,7 +12,11 @@ import IUser from 'src/app/models/user.model';
 })
 export class RegisterComponent {
   name = new FormControl('', [Validators.required, Validators.minLength(3)]);
-  email = new FormControl('', [Validators.required, Validators.email]);
+  email = new FormControl(
+    '',
+    [Validators.required, Validators.email],
+    [this.emailTaken.validate]
+  );
   age = new FormControl<number | null>(null, [
     Validators.required,
     Validators.min(8),
@@ -27,21 +33,27 @@ export class RegisterComponent {
     Validators.maxLength(13),
   ]);
 
-  registerForm = new FormGroup({
-    name: this.name,
-    email: this.email,
-    age: this.age,
-    password: this.password,
-    passwordConfirm: this.passwordConfirm,
-    phone: this.phone,
-  });
+  registerForm = new FormGroup(
+    {
+      name: this.name,
+      email: this.email,
+      age: this.age,
+      password: this.password,
+      passwordConfirm: this.passwordConfirm,
+      phone: this.phone,
+    },
+    [RegisterValidators.match('password', 'passwordConfirm')]
+  );
 
   isShowAlert = false;
   isSubmission = true;
   alertMsg = '';
   alertColor = '';
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private emailTaken: EmailTaken
+  ) {}
 
   async register() {
     if (this.registerForm.invalid || !this.isSubmission) {
