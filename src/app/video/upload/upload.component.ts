@@ -61,7 +61,7 @@ export class UploadComponent {
       .snapshotChanges()
       .pipe(last())
       .subscribe({
-        next: (snapshot) => {
+        next: () => {
           this.alertColor = 'green';
           this.alertMsg =
             'Success! Your clip is now ready to share with the world!';

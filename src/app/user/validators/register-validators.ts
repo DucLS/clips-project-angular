@@ -1,4 +1,4 @@
-import { ValidationErrors, AbstractControl, ValidatorFn } from '@angular/forms';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
 
 export class RegisterValidators {
   static match(controlName: string, matchingControlName: string): ValidatorFn {

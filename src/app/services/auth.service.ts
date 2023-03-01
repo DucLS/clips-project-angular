@@ -31,7 +31,7 @@ export class AuthService {
     this.router.events
       .pipe(
         filter((e) => e instanceof NavigationEnd),
-        map((e) => this.route.firstChild),
+        map(() => this.route.firstChild),
         switchMap((route) => route?.data ?? of({}))
       )
       .subscribe((data) => {
@@ -42,6 +42,7 @@ export class AuthService {
   public async createUser(user: IUser) {
     const { name, email, password, age, phone } = user;
 
+    // eslint-disable-next-line no-useless-catch
     try {
       const credential = await this.auth.createUserWithEmailAndPassword(
         email as string,

@@ -13,8 +13,13 @@ export class EmailTaken implements AsyncValidator {
   constructor(private auth: AngularFireAuth) {}
 
   validate = (control: AbstractControl): Promise<ValidationErrors | null> => {
-    return this.auth
-      .fetchSignInMethodsForEmail(control.value)
-      .then((response: any) => (response.length ? { emailTaken: true } : null));
+    return (
+      this.auth
+        .fetchSignInMethodsForEmail(control.value)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .then((response: any) =>
+          response.length ? { emailTaken: true } : null
+        )
+    );
   };
 }
