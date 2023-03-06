@@ -73,7 +73,7 @@ export class UploadComponent implements OnDestroy {
     this.isSubmission = true;
 
     const clipName = uuidv4();
-    const clipPath = `clip/${clipName}`;
+    const clipPath = `clip/${clipName}.mp4`;
     const clipRef = this.storage.ref(clipPath);
 
     this.task = this.storage.upload(clipPath, this.file);
