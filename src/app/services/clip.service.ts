@@ -5,9 +5,9 @@ import {
   DocumentReference,
   QuerySnapshot,
 } from '@angular/fire/compat/firestore';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 import IClip from '../models/clip.model';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { switchMap, of, map, BehaviorSubject, combineLatest } from 'rxjs';
 
 @Injectable({
@@ -56,10 +56,12 @@ export class ClipService {
   }
 
   async deleteClip(clip: IClip) {
-    const clipRef = this.storage.ref(`clip/${clip.fileName}`);
+    const clipRef = this.storage.ref(`clips/${clip.fileName}`);
+    const screenshotRef = this.storage.ref(`screenshots/${clip.fileName}`);
 
     await clipRef.delete();
+    await screenshotRef.delete();
 
-    this.clipsCollection.doc(clip.docID).delete();
+    await this.clipsCollection.doc(clip.uid).delete();
   }
 }
